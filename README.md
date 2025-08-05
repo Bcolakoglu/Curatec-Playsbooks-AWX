@@ -147,7 +147,39 @@ handlers:
 
 ---
 
-*Laatste update: {{2025}}*
+## 🔁 Verschil tussen Tasks en Handlers
+
+| Kenmerk       | **Tasks**                               | **Handlers**                            |
+|---------------|-----------------------------------------|-----------------------------------------|
+| **Wanneer uitgevoerd?** | Altijd, tenzij `when` of `tags` zegt van niet | Alleen als ze "aangeroepen" worden door `notify` |
+| **Hoe vaak uitgevoerd?** | Elke keer dat de playbook draait (mits van toepassing) | Slechts **één keer per play**, en **pas aan het einde** |
+| **Waarvoor bedoeld?** | Alle standaardacties: pakketten, configs, services, etc. | Acties die **moeten gebeuren ná een wijziging** (bijv. herstarten) |
+| **Gebruiksscenario** | Alles van installeren tot configureren | Restart van een service na config-wijziging |
+| **Declaratieplek** | Onder `tasks:` | Onder `handlers:` |
+
+### 🔁 Voorbeeld
+
+```yaml
+tasks:
+  - name: Wijzig configuratie
+    ansible.builtin.lineinfile:
+      path: /etc/demo.conf
+      regexp: '^enabled='
+      line: 'enabled=true'
+    notify: Restart demo service
+
+handlers:
+  - name: Restart demo service
+    ansible.builtin.systemd:
+      name: demo
+      state: restarted
+```
+
+🧠 In dit voorbeeld:
+- De **task** verandert het configbestand
+- Als er iets gewijzigd is, wordt de **handler** "aangeroepen" via `notify`
+- De handler voert zijn taak **pas aan het einde van de play** uit, en **slechts één keer** zelfs als meerdere taken hem zouden aanroepen
 
 ---
 
+*Laatste update: Augustus 2025*
