@@ -1,6 +1,13 @@
+---
+- name: Show current SSH user
+  hosts: all
+  gather_facts: false
+
+  tasks:
     - name: Show current SSH user
       ansible.builtin.command: whoami
       register: result
 
-    - debug:
+    - name: Display SSH user
+      debug:
         var: result.stdout
