@@ -1,0 +1,13 @@
+---
+- name: Demo SSH connectivity and basic command execution
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Run uptime on the target host
+      ansible.builtin.command: uptime
+      register: result
+
+    - name: Show uptime result
+      debug:
+        var: result.stdout
