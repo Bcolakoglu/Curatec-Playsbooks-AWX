@@ -1,0 +1,13 @@
+---
+- name: Raw test of apt-get
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Run apt-get update manually
+      ansible.builtin.command: apt-get update
+      register: result
+
+    - name: Show apt output
+      debug:
+        var: result.stdout_lines
